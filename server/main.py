@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from unittest import result
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,10 +27,11 @@ class SummaryRequest(BaseModel):
 
 @app.post("/summaries")
 async def summaries(request: SummaryRequest):
-    result = request.text.split(None, 10)
+    split_text = request.text.split(None, 10)
+    res = split_text[:10]
 
     return {
-        "summary": " ".join(result[:10]),
+        "summary": " ".join(res),
         "timestamp": datetime.now(tz=timezone.utc).isoformat(),
     }
 
