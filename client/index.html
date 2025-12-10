@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>client</title>
+  </head>
+  <body>
+    <div id="app">
+      <div>
+        <div>Text</div>
+        <textarea id="textarea" rows="5" cols="50"></textarea>
+      </div>
+      <div>
+        <button id="add-custom-text">Add custom text</button>
+        <button id="summaries">Summaries</button>
+      </div>
+      <div id="result"></div>
+    </div>
+    <script type="module">
+      import { createSummary } from "./src/summaryClient.ts";
+
+      async function onClick() {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "Loading...";
+        const text = document.getElementById("textarea").value;
+        try {
+          const summary = await createSummary(
+            import.meta.env.VITE_BACKEND_BASE_URL,
+            { text },
+          );
+          resultDiv.innerHTML = `<div>Summary: ${summary.summary}</div><div>Word count:${summary.wordCount}</div>`;
+        } catch (error) {
+          console.error(error);
+          resultDiv.innerHTML = "Error";
+        }
+      }
+
+      function setup() {
+        const button = document.getElementById("summaries");
+        button.addEventListener("click", onClick);
+      }
+
+      setup();
+    </script>
+    <script>
+      function addCustomTextToTextarea() {
+        const loremIpsumText =
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+        const textarea = document.getElementById("textarea");
+        textarea.value = loremIpsumText;
+      }
+
+      function setup() {
+        const addCustomTextButton = document.getElementById("add-custom-text");
+        addCustomTextButton.addEventListener("click", () => {
+          addCustomTextToTextarea();
+        });
+      }
+
+      setup();
+    </script>
+  </body>
+</html>
