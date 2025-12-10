@@ -1,9 +1,10 @@
 import time
 
-from logger import logger
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
+
+from .logger import logger
 
 
 class RequestLoggerMiddleware(BaseHTTPMiddleware):
@@ -11,7 +12,11 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
         start_time = time.perf_counter()
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        except Exception as e:
+            logger.exception(f"Error occurred while processing request: {e}")
+            raise e
         execution_time = time.perf_counter() - start_time
         logger.info(
             {
