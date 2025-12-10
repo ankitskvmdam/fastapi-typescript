@@ -8,6 +8,8 @@ export interface SummaryResponse {
   wordCount: number;
 }
 
+type ServerSummaryResponse = Omit<SummaryResponse, "wordCount">;
+
 export async function createSummary(
   baseURL: string,
   payload: SummaryRequest,
@@ -18,11 +20,14 @@ export async function createSummary(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(payload),
     });
   } catch (error) {
-    throw new Error("Failed to connect to the server.");
+    throw new Error(
+      "Failed to connect to the server. Please check the baseURL or your network connection.",
+    );
   }
 
   if (!response.ok) {
@@ -31,10 +36,10 @@ export async function createSummary(
     );
   }
 
-  const data = (await response.json()) as Awaited<SummaryResponse>;
+  const data = (await response.json()) as Awaited<ServerSummaryResponse>;
 
   // Calculate word count in the client side.
-  const wordCount = data.summary.split(" ").length;
+  const wordCount = data.summary.trim().split(/\s+/).length;
 
   return { ...data, wordCount };
 }
