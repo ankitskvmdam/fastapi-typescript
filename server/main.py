@@ -11,7 +11,8 @@ app = FastAPI()
 
 app.add_middleware(RequestLoggerMiddleware)
 
-# To support frontend adding cors.
+# The frontend runs on a separate port, so we enable CORS
+# to allow cross-origin requests to the API.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
