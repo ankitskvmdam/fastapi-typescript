@@ -25,15 +25,20 @@ class SummaryRequest(BaseModel):
     text: str
 
 
+class SummaryResponse(BaseModel):
+    summary: str
+    timestamp: str
+    
+
 @app.post("/summaries")
-async def summaries(request: SummaryRequest):
+async def summaries(request: SummaryRequest) -> SummaryResponse:
     split_text = request.text.split(None, 10)
     res = split_text[:10]
 
-    return {
-        "summary": " ".join(res),
-        "timestamp": datetime.now(tz=timezone.utc).isoformat(),
-    }
+    return SummaryResponse(
+        summary=" ".join(res),
+        timestamp=datetime.now(tz=timezone.utc).isoformat(),
+    )
 
 
 @app.get("/health")
