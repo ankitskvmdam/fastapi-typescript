@@ -8,7 +8,6 @@ from .middleware import RequestLoggerMiddleware
 
 app = FastAPI()
 
-app.add_middleware(RequestLoggerMiddleware)
 
 # The frontend runs on a separate port, so we enable CORS
 # to allow cross-origin requests to the API.
@@ -19,6 +18,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.add_middleware(RequestLoggerMiddleware)
 
 
 class SummaryRequest(BaseModel):
